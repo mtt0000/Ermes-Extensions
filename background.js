@@ -32,9 +32,11 @@ chrome.runtime.onMessage.addListener((msg, sender) => {
 
     if (allStats.length > 0 && schedeInCorso.length === 0 && shouldShowSummary) {
 
-      // Una colonna per ogni SCOPO DEL VOLO trovato nelle schede
+      // Una colonna per ogni SCOPO DEL VOLO trovato nelle schede; quelli CASV / C.A.S.V. vanno in fondo
+      const isCasv = sc => /casv|c\.a\.s\.v\./i.test(sc);
       const scopi = [...new Set(allStats.flatMap(r => Object.keys(r.orePerScopo || {})))]
-        .sort((a, b) => a.localeCompare(b, 'it'));
+        .sort((a, b) => (isCasv(a) - isCasv(b)) || a.localeCompare(b, 'it'));
+      const classeScopo = sc => isCasv(sc) ? 'scopo casv' : 'scopo';
       const minToOre = m => `${Math.floor(m / 60)}:${String(m % 60).padStart(2, "0")}`;
       const FISSE = 8;
 
@@ -48,23 +50,28 @@ chrome.runtime.onMessage.addListener((msg, sender) => {
           <td>${r.oreNotturne || '0:00'}</td>
           <td>${r.dataUltimoVolo || ''}</td>
           <td>${r.dataUltimoVoloNotturno || ''}</td>
-          ${scopi.map(sc => `<td class="scopo">${minToOre((r.orePerScopo || {})[sc] || 0)}</td>`).join('')}
+          ${scopi.map(sc => `<td class="${classeScopo(sc)}">${minToOre((r.orePerScopo || {})[sc] || 0)}</td>`).join('')}
         </tr>`
       ).join('');
 
       // NOTA: il tag </script> interno va spezzato per non chiudere il template literal
       const html = `<!DOCTYPE html><html lang="it"><head><meta charset="UTF-8"><title>Statistiche Piloti</title>
 <style>
-body{font-family:Arial,sans-serif;max-width:1500px;margin:40px auto;padding:20px;background:#f6f7f9}
+html,body{height:100%}
+body{font-family:Arial,sans-serif;max-width:1500px;margin:0 auto;padding:20px;box-sizing:border-box;background:#f6f7f9;display:flex;flex-direction:column}
 h2{color:#2d6cdf;text-align:center;margin-bottom:10px}
 .subtitle{text-align:center;color:#666;font-size:14px;margin-bottom:30px}
-table{width:100%;border-collapse:collapse;background:white;box-shadow:0 2px 4px rgba(0,0,0,0.1);border-radius:8px;overflow:hidden}
-th{background:#2d6cdf;color:white;padding:12px;text-align:left;font-weight:600;cursor:pointer;user-select:none;transition:background 0.2s}
+table{width:100%;border-collapse:collapse;background:white}
+th{background:#2d6cdf;color:white;padding:12px;text-align:left;font-weight:600;cursor:pointer;user-select:none;transition:background 0.2s;position:sticky;top:0;z-index:1}
 th:hover{background:#1f56b5}
 th.scopo{background:#2e7d32;font-size:12px}
 th.scopo:hover{background:#1b5e20}
+th.casv{background:#e65100}
+th.casv:hover{background:#bf360c}
+tbody tr:nth-child(odd) td.casv{background:#fff3e0}
+tbody tr:nth-child(even) td.casv{background:#ffe0b2}
 td.scopo{text-align:center}
-.table-wrap{overflow-x:auto;border-radius:8px;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
+.table-wrap{flex:0 1 auto;min-height:0;overflow:auto;border-radius:8px;box-shadow:0 2px 4px rgba(0,0,0,0.1);background:white}
 th::after{content:' \u2195';opacity:0.4;font-size:11px}
 th.sorted-asc::after{content:' \u2191';opacity:1}
 th.sorted-desc::after{content:' \u2193';opacity:1}
@@ -86,7 +93,7 @@ ${filtriUsati ? `<div class="filtri-box">
   <span><strong>Specialit&agrave;:</strong> ${filtriUsati.specialita || 'Tutti'}</span>
   <span><strong>Pilota:</strong> ${filtriUsati.pilotaSelezione}</span>
 </div>` : ''}
-<p class="subtitle">Le colonne in verde riportano le ore di volo reali suddivise per <b>scopo del volo</b></p>
+<p class="subtitle">Le colonne in verde riportano le ore di volo reali suddivise per <b>scopo del volo</b>; in arancione quelle <b>CASV</b></p>
 <div class="table-wrap">
 <table id="statsTable">
   <thead>
@@ -99,7 +106,7 @@ ${filtriUsati ? `<div class="filtri-box">
       <th data-col="5" data-type="ore">Ore Notturne</th>
       <th data-col="6" data-type="date">Data ultimo volo</th>
       <th data-col="7" data-type="date">Data ultimo volo notturno</th>
-      ${scopi.map((sc, i) => `<th class="scopo" data-col="${FISSE + i}" data-type="ore">${sc}</th>`).join('')}
+      ${scopi.map((sc, i) => `<th class="${classeScopo(sc)}" data-col="${FISSE + i}" data-type="ore">${sc}</th>`).join('')}
     </tr>
   </thead>
   <tbody>${tableRows}</tbody>
