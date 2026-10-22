@@ -90,10 +90,13 @@ function rimuoviGrado(testoCompleto) {
   return testoCompleto.trim();
 }
 
+  // Somma le righe "Totale ore su Elicotteri" / "Totale ore su Aerei"/... (colonna TOT)
   function getOreVolate(doc = document) {
-    const row = Array.from(doc.querySelectorAll("tr"))
-      .find(tr => tr.children[0]?.textContent.includes("Totale ore su Elicotteri"));
-    return row ? row.children[3].textContent.trim() : "";
+    const rows = Array.from(doc.querySelectorAll("tr"))
+      .filter(tr => (tr.children[0]?.textContent || "").trim().startsWith("Totale ore su"));
+    if (rows.length === 0) return "";
+    const tot = rows.reduce((acc, tr) => acc + parseOreToMinuti((tr.children[3]?.textContent || "").trim()), 0);
+    return minutiToOreStr(tot);
   }
 
   function getOreSimulatore(doc = document) {
@@ -125,24 +128,37 @@ function rimuoviGrado(testoCompleto) {
   // Ore notturne: riga "(di cui VFR Notturno)" nella tabella .noborder
   // La cella VFR (children[1]) contiene es. "(9:10)"
   function getOreNotturne(doc = document) {
-    const rows = doc.querySelectorAll("table.noborder tbody tr");
-    for (const row of rows) {
+    let tot = 0;
+    doc.querySelectorAll("table.noborder tbody tr").forEach(row => {
       const label = (row.children[0]?.textContent || "").trim();
-      if (label.includes("VFR Notturno") || label.includes("Notturno")) {
-        const vfrTxt = (row.children[1]?.textContent || "").trim();
-        const m = vfrTxt.match(/\(?(\d+):(\d{2})\)?/);
-        if (m) return `${parseInt(m[1])}:${m[2]}`;
-      }
-    }
-    return "0:00";
+      if (!label.includes("Notturno")) return;
+      const m = (row.children[1]?.textContent || "").trim().match(/\(?(\d+):(\d{2})\)?/);
+      if (m) tot += parseInt(m[1]) * 60 + parseInt(m[2]);
+    });
+    return minutiToOreStr(tot);
+  }
+
+  // Righe dei voli reali: le tabelle .fontCustom possono essere piu' d'una (salto pagina)
+  function getRigheVoli(doc = document) {
+    return Array.from(doc.querySelectorAll("table.fontCustom tbody tr"));
+  }
+
+  // Minuti di volo per ogni "SCOPO DEL VOLO" (ultima colonna; DURATA e' la 5a dalla fine)
+  function getOrePerScopo(doc = document) {
+    const perScopo = {};
+    getRigheVoli(doc).forEach(row => {
+      const cells = row.querySelectorAll("td");
+      if (cells.length < 6) return;
+      const scopo = (cells[cells.length - 1].textContent || "").replace(/\s+/g, " ").trim().toUpperCase() || "N/D";
+      const durata = parseInt((cells[cells.length - 5].textContent || "").replace(/[^\d]/g, ""), 10) || 0;
+      perScopo[scopo] = (perScopo[scopo] || 0) + durata;
+    });
+    return perScopo;
   }
 
   function getDataUltimoVolo(doc = document) {
-    const table = doc.querySelector('table.fontCustom');
-    if (!table) return '';
-
     let lastDate = null;
-    table.querySelectorAll('tbody tr').forEach(row => {
+    getRigheVoli(doc).forEach(row => {
       const cell = row.querySelector('td');
       if (!cell) return;
       const m = cell.textContent.trim().match(/(\d{2})\/(\d{2})\/(\d{4})/);
@@ -156,16 +172,13 @@ function rimuoviGrado(testoCompleto) {
   }
 
   function getDataUltimoVoloNotturno(doc = document) {
-    const table = doc.querySelector("table.fontCustom");
-    if (!table) return "";
-
     let lastDate = null;
-    table.querySelectorAll("tbody tr").forEach(row => {
+    getRigheVoli(doc).forEach(row => {
       const cells = row.querySelectorAll("td");
       if (cells.length < 9) return;
 
       const dataTxt = (cells[0]?.textContent || "").trim();
-      const voloNottTxt = (cells[8]?.textContent || "").trim();
+      const voloNottTxt = (cells[cells.length - 4]?.textContent || "").trim();
       const m = dataTxt.match(/(\d{2})\/(\d{2})\/(\d{4})/);
       if (!m) return;
 
@@ -183,7 +196,7 @@ function rimuoviGrado(testoCompleto) {
   function parseOreToMinuti(oreStr) {
     if (!oreStr) return 0;
     const parts = oreStr.split(':');
-    if (parts.length === 2) return parseInt(parts[0]) * 60 + parseInt(parts[1]);
+    if (parts.length === 2) return (parseInt(parts[0]) || 0) * 60 + (parseInt(parts[1]) || 0);
     return 0;
   }
 
@@ -208,6 +221,7 @@ function rimuoviGrado(testoCompleto) {
 
     const dataUltimoVolo         = getDataUltimoVolo(doc);
     const dataUltimoVoloNotturno = getDataUltimoVoloNotturno(doc);
+    const orePerScopo            = getOrePerScopo(doc);
 
     const h2 = document.querySelector('#pagePreview h2');
     if (h2) h2.textContent = `- ${cognomeNome} (${oreTotali})`;
@@ -221,7 +235,8 @@ function rimuoviGrado(testoCompleto) {
         oreTotali,
         oreNotturne,
         dataUltimoVolo,
-        dataUltimoVoloNotturno
+        dataUltimoVoloNotturno,
+        orePerScopo
       }
     });
   });
