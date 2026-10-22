@@ -1,31 +1,31 @@
 N.	Qualifica	Cognome e Nome	Specialità	Matricola	ID Ermes
-1	P.D.	ROVERATO Bruno	Pilota elicottero	18761	
+1	P.D.	ROVERATO Bruno	Pilota elicottero	18761	2
 2	V.Q.A.	COLASANTI Matteo	Pilota elicottero	20681	1028
-3	COMM.C.	MARTELLUCCI Giovanni	Pilota elicottero	309369	
-4	COMM.C.	SCHIETROMA Enrico	Pilota aereo	28581	
+3	COMM.C.	MARTELLUCCI Giovanni	Pilota elicottero	309369	1207
+4	COMM.C.	SCHIETROMA Enrico	Pilota aereo	28581	7
 5	SOST.COMM.	SOLLEVANTI Marco	Pilota elicottero	233678	22
 6	ISP.	BONO Antonio	Pilota elicottero	321812	1072
-7	ISP.	BORZI Andrea	Pilota aereo	282537	
-8	ISP.	FILICE Damiano	Pilota aereo	322188	
+7	ISP.	BORZI Andrea	Pilota aereo	282537	525
+8	ISP.	FILICE Damiano	Pilota aereo	322188	1191
 9	ISP.	FOCACCIA Fabio	Pilota elicottero	324706	1086
 10	ISP.	GIARDINI Simone	Pilota elicottero	319975	1157
-11	ISP.	LEONETTI Salvatore	Pilota aereo	320181	
-12	ISP.	NICASTRO Giuseppe	Pilota aereo	321510	
-13	ISP.	PECORARE Maurizio	Pilota aereo	282046	
-14	ISP.	SERAFINI Daniele	Pilota aereo	319562	
-15	ISP.	VERNI Gianfranco	Pilota aereo	299194	
-16	V.ISP.	CASCONE Rosario	Pilota aereo	323935	
+11	ISP.	LEONETTI Salvatore	Pilota aereo	320181	1097
+12	ISP.	NICASTRO Giuseppe	Pilota aereo	321510	1096
+13	ISP.	PECORARE Maurizio	Pilota aereo	282046	34
+14	ISP.	SERAFINI Daniele	Pilota aereo	319562	1210
+15	ISP.	VERNI Gianfranco	Pilota aereo	299194	35
+16	V.ISP.	CASCONE Rosario	Pilota aereo	323935	1126
 17	V.ISP.	PROCOPIO Mattia	Pilota elicottero	325708	1137
 18	V.ISP.	TROZZI Marco	Pilota elicottero	271323	522
 19	SOV.	CASINI Giulio	Pilota elicottero	289011	33
-20	SOV.	CATALANO Ettore	Pilota aereo	289701	
-21	ASS.C.	MANCINI Armando	Pilota aereo	317078	
-22	ASS.	MARINO Giuseppe	Pilota aereo	323759	
-23	ASS.	MIRISOLA Claudio	Pilota aereo	319148	
-24	AG.S.	CONTADIN Martina	Pilota aereo	327156	
-25	AG.S.	COPPARONI Federico	Pilota aereo	326967	
+20	SOV.	CATALANO Ettore	Pilota aereo	289701	606
+21	ASS.C.	MANCINI Armando	Pilota aereo	317078	1043
+22	ASS.	MARINO Giuseppe	Pilota aereo	323759	1212
+23	ASS.	MIRISOLA Claudio	Pilota aereo	319148	1047
+24	AG.S.	CONTADIN Martina	Pilota aereo	327156	1211
+25	AG.S.	COPPARONI Federico	Pilota aereo	326967	1189
 26	AG.S.	MARZIALI Lorenzo	Pilota elicottero	241116	1184
-27	AG.	PRESTIERI Gianluca	Pilota aereo	300626	
+27	AG.	PRESTIERI Gianluca	Pilota aereo	300626	1213
 
 ID Ermes = valore del parametro "pilota" nel link dello Stralcio Completo.
-Gli ID mancanti si impostano dal popup (sezione "ID Ermes piloti") e restano salvati.
+Gli ID si possono modificare anche dal popup (sezione "ID Ermes piloti") e restano salvati.

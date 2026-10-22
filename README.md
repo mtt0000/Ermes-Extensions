@@ -7,4 +7,4 @@ Estensione Chrome (MV3) per Ermes che unisce:
 
 File principali: `popup.html`/`popup.js` (interfaccia), `pilots.js` (elenco piloti), `stralcio.js` (lettura dello stralcio), `background.js` (riepilogo), `parteprima.js` (modulo Parti Prime).
 
-Gli ID Ermes dei piloti nuovi vanno impostati nella sezione "⚙️ ID Ermes piloti" del popup (oppure in `pilots.js`).
+Gli ID Ermes dei piloti sono in `pilots.js` e si possono modificare dalla sezione "⚙️ ID Ermes piloti" del popup.
