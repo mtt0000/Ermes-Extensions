@@ -1,0 +1,738 @@
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+      <link rel="stylesheet" href="http://ermes.cen.poliziadistato.it/assets/styles/kunstler.css">
+      <link rel="stylesheet" href="http://ermes.cen.poliziadistato.it/assets/styles/vogue.css">
+      <link rel="stylesheet" href="http://ermes.cen.poliziadistato.it/assets/styles/times.css">
+      <link rel="stylesheet" href="http://ermes.cen.poliziadistato.it/assets/styles/font-for-pdf.css">
+      <link rel="stylesheet" href="http://ermes.cen.poliziadistato.it/assets/styles/monospace.css?v=2">
+      <link rel="stylesheet" href="http://ermes.cen.poliziadistato.it/assets/styles/fonts/courier/courier.css">
+      <link rel="stylesheet" href="http://ermes.cen.poliziadistato.it/assets/styles/times.css">
+      <link rel="stylesheet" href="http://ermes.cen.poliziadistato.it/assets/font-awesome/css/font-awesome.min.css" type="text/css">
+
+        <style type="text/css" media="all">
+            body {
+                width: 280mm;
+                margin-left: auto;
+                margin-right: auto;
+                font-size:3mm;
+            }
+
+
+            table{
+                font-size: 8px !important;
+                border : 1px solid black;
+                border-spacing: 0px;
+                border-collapse: collapse;
+                border-top: 0px none;
+            }
+
+            table td,
+            table th{
+                border : 1px solid black;
+                background:white;
+                line-height:1.3em !important;
+            }
+
+            table.specialista td,
+            table.specialista th{
+                border : 1px solid black;
+                padding: 5px;
+            }
+
+            .noborder,
+            .noborder th,
+            .noborder td{
+                border: 0px none;
+            }
+
+            .tabella_totali{
+                margin: auto;
+                border: 0px none;
+            }
+            .tabella_totali th,
+            .tabella_totali td{
+                border: 0px none;
+            }
+
+            #table_voli{
+                page-break-after: always;
+            }
+
+            #table_riassuntiva{
+                width: 100%;
+            }
+
+            #footer{
+                position: fixed;bottom: 19px;
+            }
+            .fontCustom{
+              vertical-align: top;
+              background:white;
+              /* font-family: "sans-serif" !important; */
+              line-height: 1em;
+            }
+
+            @page {
+              size: A4;
+              margin-left: 15px;
+              margin-right: 15px;
+              margin-top: 20px;
+
+              @top{
+                content: element(header);
+              }
+
+              @bottom{
+                content: element(footer);
+              };
+            }
+
+
+            #printheader {
+              flow: static(header);
+            }
+            #printfooter {
+              flow: static(footer);
+            }
+
+
+            .page{
+              counter-increment: page;
+              content: counter(page);
+            }
+
+            .topage{
+              content: counter(pages);
+            }
+
+        </style>
+        <style type="text/css" media="print">
+            body {
+                width: 100%;
+            }
+        </style>
+    </head>
+    <body style="background:white !important">
+
+
+      <!-- FOOTER -->
+      
+
+      <div style="background:white !important;color:black">
+                  
+
+  
+          <div style="text-align:center;">
+        <img style="
+            height:pt;
+            width:55px;
+            padding:;
+          " src="http://ermes.cen.poliziadistato.it\/assets/images/logo-ministero.png">
+      </div>
+    
+  
+          <div style="
+          text-align:center;
+          font-size:70pt;
+          font-family:kunstler_scriptregular;
+          font-style:italic;
+          color:;
+          font-weight:;
+          line-height:0.7em;
+          margin:;
+          padding:;
+        ">
+        Ministero dell'Interno      </div>
+    
+  
+          <div style="
+          text-align:center;
+          font-size:10pt;
+          font-family:'Times New Roman';
+          font-style:;
+          color:;
+          font-weight:;
+          line-height:1.1em;
+          margin:;
+          padding:;
+        ">
+        DIPARTIMENTO DELLA PUBBLICA SICUREZZA      </div>
+    
+  
+          <div style="
+          text-align:center;
+          font-size:10pt;
+          font-family:'Times New Roman';
+          font-style:;
+          color:;
+          font-weight:;
+          line-height:1.1em;
+          margin:;
+          padding:;
+        ">
+        REPARTO VOLO      </div>
+    
+  
+          <div style="
+          text-align:center;
+          font-size:10pt;
+          font-family:'Times New Roman';
+          font-style:;
+          color:;
+          font-weight:;
+          line-height:1.1em;
+          margin:;
+          padding:;
+        ">
+        PRATICA DI MARE      </div>
+    
+                  <div style="font-size:10px;background:white !important;color:black !important">
+                        Dal 26/10/2025 al 25/11/2025                    </div>
+        <div style="font-size:10px;background:white !important;color:black !important">
+            VICE ISPETTORE Bono Antonio        </div>
+    </div>
+
+        <table class="fontCustom" style="width:100%;margin: 0px auto; font-size: 9px;page-break-after: always;">
+        <thead>
+            <tr style="">
+                <th rowspan="3" style="width:7%;text-align:center;vertical-align:middle;padding:2px">DATA</th>
+                <th rowspan="3" style="text-align:center;vertical-align:middle;padding:2px">AEROMOBILE</th>
+                <th colspan="2" style="text-align:center;vertical-align:middle;padding:2px">AEROPORTO E ORA</th>
+                                <th colspan="3" style="text-align:center;vertical-align:middle;padding:2px;width:18%">CONDIZIONI DI VOLO <br> (NOTT)</th>
+                                <th rowspan="3" style="text-align:center;vertical-align:middle;padding:2px">DURATA <br> VOLO</th>
+                                <th rowspan="3" style="text-align:center;vertical-align:middle;padding:2px">VOLO <br> NOTT </th>
+                                <th rowspan="3" style="text-align:center;vertical-align:middle;padding:2px">QUOTA</th>
+                <th rowspan="3" style="text-align:center;vertical-align:middle;padding:2px">MANSIONI A BORDO</th>
+                <th rowspan="3" style="text-align:center;vertical-align:middle;padding:2px">SCOPO DEL VOLO</th>
+            </tr>
+            <tr>
+                <th rowspan="2" style="text-align:center;vertical-align:middle;padding:2px">PARTENZA</th>
+                <th rowspan="2" style="text-align:center;vertical-align:middle;padding:2px">ARRIVO</th>
+                                <th rowspan="2" style="text-align:center;vertical-align:middle;padding:2px">VFR</th>
+                <th colspan="2" style="text-align:center;vertical-align:middle;padding:2px">IFR</th>
+                            </tr>
+            <tr>
+                                <th style="text-align:center">SIMUL</th>
+                <th style="text-align:center">REALE</th>
+                            </tr>
+        </thead>
+        <tbody>
+                        <tr>
+                    <td style="text-align: center;padding:2px">28/10/2025</td>
+                    <td style="text-align: center;">
+                        UH139<br>PS114                    </td>
+                    <td style="width:180px !important;text-align: center">
+                        1° REPARTO VOLO - PRATICA DI MARE<br>09:55 (Z) 10:55 (LT)                    </td>
+                    <td style="width:180px !important;text-align: center">
+                        1° REPARTO VOLO - PRATICA DI MARE<br>11:00 (Z) 12:00 (LT)                    </td>
+                                            <td style="text-align:center;padding:1px 0;">
+                            65                        </td>
+                        <td style="text-align:center;padding:1px 0;">
+                            0                        </td>
+                        <td style="text-align:center;padding:1px 0;">
+                            0                        </td>
+                                        <td style="text-align:center;">65</td>
+                                        <td style="text-align:center;">0</td>
+                                        <td style="text-align:right;">
+                        300 m<br>984 Ft                    </td>
+                    <td style="text-align:center;padding:1px 0;">
+                        2P                    </td>
+                    <td style="padding:2px;text-align:center">
+                        ADDESTRAMENTO                    </td>
+                    </tr>
+                                    <tr>
+                    <td style="text-align: center;padding:2px">07/11/2025</td>
+                    <td style="text-align: center;">
+                        UH139<br>PS108                    </td>
+                    <td style="width:180px !important;text-align: center">
+                        1° REPARTO VOLO - PRATICA DI MARE<br>09:15 (Z) 10:15 (LT)                    </td>
+                    <td style="width:180px !important;text-align: center">
+                        1° REPARTO VOLO - PRATICA DI MARE<br>10:20 (Z) 11:20 (LT)                    </td>
+                                            <td style="text-align:center;padding:1px 0;">
+                            65                        </td>
+                        <td style="text-align:center;padding:1px 0;">
+                            0                        </td>
+                        <td style="text-align:center;padding:1px 0;">
+                            0                        </td>
+                                        <td style="text-align:center;">65</td>
+                                        <td style="text-align:center;">0</td>
+                                        <td style="text-align:right;">
+                        500 m<br>1640 Ft                    </td>
+                    <td style="text-align:center;padding:1px 0;">
+                        2P                    </td>
+                    <td style="padding:2px;text-align:center">
+                        ORDINE PUBBLICO                    </td>
+                    </tr>
+                                    <tr>
+                    <td style="text-align: center;padding:2px">20/11/2025</td>
+                    <td style="text-align: center;">
+                        UH139<br>PS113                    </td>
+                    <td style="width:180px !important;text-align: center">
+                        1° REPARTO VOLO - PRATICA DI MARE<br>08:45 (Z) 09:45 (LT)                    </td>
+                    <td style="width:180px !important;text-align: center">
+                        1° REPARTO VOLO - PRATICA DI MARE<br>09:50 (Z) 10:50 (LT)                    </td>
+                                            <td style="text-align:center;padding:1px 0;">
+                            65                        </td>
+                        <td style="text-align:center;padding:1px 0;">
+                            0                        </td>
+                        <td style="text-align:center;padding:1px 0;">
+                            0                        </td>
+                                        <td style="text-align:center;">65</td>
+                                        <td style="text-align:center;">0</td>
+                                        <td style="text-align:right;">
+                        300 m<br>984 Ft                    </td>
+                    <td style="text-align:center;padding:1px 0;">
+                        2P                    </td>
+                    <td style="padding:2px;text-align:center">
+                        ADDESTRAMENTO                    </td>
+                    </tr>
+                                    <tr>
+                    <td style="text-align: center;padding:2px">22/11/2025</td>
+                    <td style="text-align: center;">
+                        UH139<br>PS112                    </td>
+                    <td style="width:180px !important;text-align: center">
+                        LIRE - PRATICA DI MARE<br>15:20 (Z) 16:20 (LT)                    </td>
+                    <td style="width:180px !important;text-align: center">
+                        LIRE - PRATICA DI MARE<br>17:40 (Z) 18:40 (LT)                    </td>
+                                            <td style="text-align:center;padding:1px 0;">
+                            140<br>(85)                        </td>
+                        <td style="text-align:center;padding:1px 0;">
+                            0                        </td>
+                        <td style="text-align:center;padding:1px 0;">
+                            0                        </td>
+                                        <td style="text-align:center;">140</td>
+                                        <td style="text-align:center;">85</td>
+                                        <td style="text-align:right;">
+                        610 m<br>2001 Ft                    </td>
+                    <td style="text-align:center;padding:1px 0;">
+                        2P                    </td>
+                    <td style="padding:2px;text-align:center">
+                        ORDINE PUBBLICO                    </td>
+                    </tr>
+                            </tbody>
+    </table>
+    
+            <h3>Attività svolta su simulatori di volo</h3>
+        <table style="width:100%;margin: 15px auto; font-size: 9px; text-align: center;page-break-after: always;">
+            <thead>
+              <tr>
+                <th style="padding:2px;text-align:center;vertical-align:middle;border-bottom:0px !important;">DATA</th>
+                <th style="padding:2px;text-align:center;vertical-align:middle;border-bottom:0px !important;">AEROMOBILE</th>
+                <th style="padding:2px;text-align:center;vertical-align:middle" colspan="2">AEROPORTO E ORA</th>
+                <th style="padding:2px;text-align:center;vertical-align:middle" colspan="3">CONDIZIONI DI VOLO <br> (NOTT)</th>
+                <th style="padding:2px;text-align:center;vertical-align:middle;border-bottom:0px !important;">DURATA</th>
+                <th style="padding:2px;text-align:center;vertical-align:middle;border-bottom:0px !important;">VOLO <br> NOTT </th>
+                <th style="padding:2px;text-align:center;vertical-align:middle;border-bottom:0px !important;">QUOTA</th>
+                <th style="padding:2px;text-align:center;vertical-align:middle;border-bottom:0px !important;">MANSIONI A BORDO</th>
+                <th style="padding:2px;text-align:center;vertical-align:middle;border-bottom:0px !important;">SCOPO DEL VOLO</th>
+              </tr>
+              <tr>
+                <th style="padding:2px;text-align:center;vertical-align:middle;border-top:0px !important"></th>
+                <th style="padding:2px;text-align:center;vertical-align:middle;border-top:0px !important"></th>
+                <th style="padding:2px;text-align:center;vertical-align:middle">PARTENZA</th>
+                <th style="padding:2px;text-align:center;vertical-align:middle">ARRIVO</th>
+                <th style="padding:2px;text-align:center;vertical-align:middle">VFR</th>
+                <th style="padding:2px;text-align:center;vertical-align:middle">IFR <br> SIMUL</th>
+                <th style="padding:2px;text-align:center;vertical-align:middle">IFR <br> REALE</th>
+                <th style="padding:2px;text-align:center;vertical-align:middle;border-top:0px !important"></th>
+                <th style="padding:2px;text-align:center;vertical-align:middle;border-top:0px !important"></th>
+                <th style="padding:2px;text-align:center;vertical-align:middle;border-top:0px !important"></th>
+                <th style="padding:2px;text-align:center;vertical-align:middle;border-top:0px !important"></th>
+                <th style="padding:2px;text-align:center;vertical-align:middle;border-top:0px !important"></th>
+              </tr>
+            </thead>
+            <tbody>
+                            <tr>
+                    <td rowspan="1" style="padding:2px;text-align: center;">10/11/2025</td>
+                    <td rowspan="1" style="padding:2px;text-align: center;">
+                        UH139<br>
+                        IT 032                    </td>
+                    <td rowspan="1" style="padding:2px;text-align: center">
+                        <br>06:15                    </td>
+                    <td rowspan="1" style="padding:2px;text-align: center">
+                        <br>08:15                    </td>
+
+                    <!-- VFR -->
+                    <td style="padding:2px;text-align:center">
+                      120<br>                    </td>
+
+                    <!-- IFR SIM -->
+                    <td style="padding:2px;text-align:center">
+                      0<br>                    </td>
+
+
+                    <!-- IFR REALE -->
+                    <td style="padding:2px;text-align:center">
+                      0<br>                    </td>
+
+
+                    <!-- DURATA -->
+                    <td style="padding:2px;text-align:center">
+                      120                    </td>
+
+                    <!-- VOLO NOTT -->
+                    <td style="padding:2px;text-align:center">
+                      0<br>                    </td>
+
+                    <!-- QUOTA -->
+                    <td style="padding:2px;text-align: right;">
+                      -                    </td>
+
+                    <!-- MANSIONE A BORDO -->
+                    <td style="padding:2px;text-align: center;">
+                      P<br>                    </td>
+
+
+                    <!-- SCOPO DEL VOLO -->
+                    <td style="padding:2px;text-align: left;">
+                      ADDESTRAMENTO                    </td>
+
+                  </tr>
+                                <tr>
+                    <td rowspan="1" style="padding:2px;text-align: center;">11/11/2025</td>
+                    <td rowspan="1" style="padding:2px;text-align: center;">
+                        UH139<br>
+                        IT 032                    </td>
+                    <td rowspan="1" style="padding:2px;text-align: center">
+                        <br>04:00                    </td>
+                    <td rowspan="1" style="padding:2px;text-align: center">
+                        <br>06:00                    </td>
+
+                    <!-- VFR -->
+                    <td style="padding:2px;text-align:center">
+                      120<br>                    </td>
+
+                    <!-- IFR SIM -->
+                    <td style="padding:2px;text-align:center">
+                      0<br>                    </td>
+
+
+                    <!-- IFR REALE -->
+                    <td style="padding:2px;text-align:center">
+                      0<br>                    </td>
+
+
+                    <!-- DURATA -->
+                    <td style="padding:2px;text-align:center">
+                      120                    </td>
+
+                    <!-- VOLO NOTT -->
+                    <td style="padding:2px;text-align:center">
+                      0<br>                    </td>
+
+                    <!-- QUOTA -->
+                    <td style="padding:2px;text-align: right;">
+                      -                    </td>
+
+                    <!-- MANSIONE A BORDO -->
+                    <td style="padding:2px;text-align: center;">
+                      P<br>                    </td>
+
+
+                    <!-- SCOPO DEL VOLO -->
+                    <td style="padding:2px;text-align: left;">
+                      ADDESTRAMENTO                    </td>
+
+                  </tr>
+                                <tr>
+                    <td rowspan="1" style="padding:2px;text-align: center;">11/11/2025</td>
+                    <td rowspan="1" style="padding:2px;text-align: center;">
+                        UH139<br>
+                        IT 032                    </td>
+                    <td rowspan="1" style="padding:2px;text-align: center">
+                        <br>06:30                    </td>
+                    <td rowspan="1" style="padding:2px;text-align: center">
+                        <br>08:30                    </td>
+
+                    <!-- VFR -->
+                    <td style="padding:2px;text-align:center">
+                      120<br>                    </td>
+
+                    <!-- IFR SIM -->
+                    <td style="padding:2px;text-align:center">
+                      0<br>                    </td>
+
+
+                    <!-- IFR REALE -->
+                    <td style="padding:2px;text-align:center">
+                      0<br>                    </td>
+
+
+                    <!-- DURATA -->
+                    <td style="padding:2px;text-align:center">
+                      120                    </td>
+
+                    <!-- VOLO NOTT -->
+                    <td style="padding:2px;text-align:center">
+                      0<br>                    </td>
+
+                    <!-- QUOTA -->
+                    <td style="padding:2px;text-align: right;">
+                      -                    </td>
+
+                    <!-- MANSIONE A BORDO -->
+                    <td style="padding:2px;text-align: center;">
+                      2P<br>                    </td>
+
+
+                    <!-- SCOPO DEL VOLO -->
+                    <td style="padding:2px;text-align: left;">
+                      ADDESTRAMENTO                    </td>
+
+                  </tr>
+                                <tr>
+                    <td rowspan="1" style="padding:2px;text-align: center;">12/11/2025</td>
+                    <td rowspan="1" style="padding:2px;text-align: center;">
+                        UH139<br>
+                        IT032                    </td>
+                    <td rowspan="1" style="padding:2px;text-align: center">
+                        <br>04:00                    </td>
+                    <td rowspan="1" style="padding:2px;text-align: center">
+                        <br>06:00                    </td>
+
+                    <!-- VFR -->
+                    <td style="padding:2px;text-align:center">
+                      120<br>                    </td>
+
+                    <!-- IFR SIM -->
+                    <td style="padding:2px;text-align:center">
+                      0<br>                    </td>
+
+
+                    <!-- IFR REALE -->
+                    <td style="padding:2px;text-align:center">
+                      0<br>                    </td>
+
+
+                    <!-- DURATA -->
+                    <td style="padding:2px;text-align:center">
+                      120                    </td>
+
+                    <!-- VOLO NOTT -->
+                    <td style="padding:2px;text-align:center">
+                      0<br>                    </td>
+
+                    <!-- QUOTA -->
+                    <td style="padding:2px;text-align: right;">
+                      -                    </td>
+
+                    <!-- MANSIONE A BORDO -->
+                    <td style="padding:2px;text-align: center;">
+                      2P<br>                    </td>
+
+
+                    <!-- SCOPO DEL VOLO -->
+                    <td style="padding:2px;text-align: left;">
+                      ADDESTRAMENTO                    </td>
+
+                  </tr>
+                                <tr>
+                    <td rowspan="1" style="padding:2px;text-align: center;">13/11/2025</td>
+                    <td rowspan="1" style="padding:2px;text-align: center;">
+                        UH139<br>
+                        IT 032                    </td>
+                    <td rowspan="1" style="padding:2px;text-align: center">
+                        <br>08:30                    </td>
+                    <td rowspan="1" style="padding:2px;text-align: center">
+                        <br>10:30                    </td>
+
+                    <!-- VFR -->
+                    <td style="padding:2px;text-align:center">
+                      120<br>                    </td>
+
+                    <!-- IFR SIM -->
+                    <td style="padding:2px;text-align:center">
+                      0<br>                    </td>
+
+
+                    <!-- IFR REALE -->
+                    <td style="padding:2px;text-align:center">
+                      0<br>                    </td>
+
+
+                    <!-- DURATA -->
+                    <td style="padding:2px;text-align:center">
+                      120                    </td>
+
+                    <!-- VOLO NOTT -->
+                    <td style="padding:2px;text-align:center">
+                      0<br>                    </td>
+
+                    <!-- QUOTA -->
+                    <td style="padding:2px;text-align: right;">
+                      -                    </td>
+
+                    <!-- MANSIONE A BORDO -->
+                    <td style="padding:2px;text-align: center;">
+                      2P<br>                    </td>
+
+
+                    <!-- SCOPO DEL VOLO -->
+                    <td style="padding:2px;text-align: left;">
+                      ADDESTRAMENTO                    </td>
+
+                  </tr>
+                                <tr>
+                    <td rowspan="1" style="padding:2px;text-align: center;">13/11/2025</td>
+                    <td rowspan="1" style="padding:2px;text-align: center;">
+                        UH139<br>
+                        IT 032                    </td>
+                    <td rowspan="1" style="padding:2px;text-align: center">
+                        <br>04:00                    </td>
+                    <td rowspan="1" style="padding:2px;text-align: center">
+                        <br>06:00                    </td>
+
+                    <!-- VFR -->
+                    <td style="padding:2px;text-align:center">
+                      120<br>(30)<br>                    </td>
+
+                    <!-- IFR SIM -->
+                    <td style="padding:2px;text-align:center">
+                      0<br>                    </td>
+
+
+                    <!-- IFR REALE -->
+                    <td style="padding:2px;text-align:center">
+                      0<br>                    </td>
+
+
+                    <!-- DURATA -->
+                    <td style="padding:2px;text-align:center">
+                      120                    </td>
+
+                    <!-- VOLO NOTT -->
+                    <td style="padding:2px;text-align:center">
+                      30<br>                    </td>
+
+                    <!-- QUOTA -->
+                    <td style="padding:2px;text-align: right;">
+                      -                    </td>
+
+                    <!-- MANSIONE A BORDO -->
+                    <td style="padding:2px;text-align: center;">
+                      P<br>                    </td>
+
+
+                    <!-- SCOPO DEL VOLO -->
+                    <td style="padding:2px;text-align: left;">
+                      ADDESTRAMENTO                    </td>
+
+                  </tr>
+                            </tbody>
+        </table>
+    
+    
+        <table style="width:100%;margin: 20px auto; font-size: 12px !important; text-align: center;">
+        <thead>
+        <tr>
+            <th rowspan="2" style="padding:2px;text-align:center;vertical-align:middle">Aeromobile</th>
+            <th colspan="2" style="padding:2px;text-align:center;vertical-align:middle">1° Pilota</th>
+            <th colspan="2" style="padding:2px;text-align:center;vertical-align:middle">2° Pilota</th>
+            <th colspan="2" style="padding:2px;text-align:center;vertical-align:middle">Istruttore <br> Pilota</th>
+            <th colspan="2" style="padding:2px;text-align:center;vertical-align:middle">Pilota <br> Doppio Comando</th>
+            <th colspan="2" style="padding:2px;text-align:center;vertical-align:middle">Solo</th>
+        </tr>
+        <tr>
+            <th style="padding:2px;text-align:center;vertical-align:middle">VFR <br>(di cui NOTT.)</th>
+            <th style="padding:2px;text-align:center;vertical-align:middle">IFR</th>
+            <th style="padding:2px;text-align:center;vertical-align:middle">VFR <br>(di cui NOTT.)</th>
+            <th style="padding:2px;text-align:center;vertical-align:middle">IFR</th>
+            <th style="padding:2px;text-align:center;vertical-align:middle">VFR <br>(di cui NOTT.)</th>
+            <th style="padding:2px;text-align:center;vertical-align:middle">IFR</th>
+            <th style="padding:2px;text-align:center;vertical-align:middle">VFR <br>(di cui NOTT.)</th>
+            <th style="padding:2px;text-align:center;vertical-align:middle">IFR</th>
+            <th style="padding:2px;text-align:center;vertical-align:middle">VFR </th>
+            <th style="padding:2px;text-align:center;vertical-align:middle">IFR</th>
+        </tr>
+        </thead>
+        <tbody>
+                    <tr>
+                <td style="text-align: left;padding:2px;">
+                    AW139<span style="font-weight:bold"> (17:35)</span>                </td>
+                <td style="padding:2px;text-align:center">
+                    6:00<br>(0:30)                </td>
+                <td style="padding:2px;text-align:center">
+                    0:00                </td>
+                <td style="padding:2px;text-align:center">
+                    11:35<br>(1:25)                </td>
+                <td style="padding:2px;text-align:center">
+                    0:00                </td>
+                <td style="padding:2px;text-align:center">
+                    0:00                </td>
+                <td style="padding:2px;text-align:center">
+                    0:00                </td>
+                <td style="padding:2px;text-align:center">
+                    0:00                </td>
+                <td style="padding:2px;text-align:center">
+                    0:00                </td>
+                <td style="padding:2px;text-align:center">
+                    0:00                </td>
+                <td style="padding:2px;text-align:center">
+                    0:00                </td>
+            </tr>
+                </tbody>
+    </table>
+
+    <table class="noborder" style="width:60%;margin-left: 50px;margin-bottom: 50px;font-size:11px !important">
+        <tbody>
+            <tr>
+                <td></td>
+                <td>VFR</td>
+                <td>IFR</td>
+                <td>TOT</td>
+            </tr>
+                                    <tr>
+                <td>Totale ore su Elicotteri</td>
+                <td>17:35</td>
+                <td>0:00</td>
+                <td>17:35</td>
+            </tr>
+            <tr>
+                <td>(di cui VFR Notturno)</td>
+                <td>
+                    (1:55)                </td>
+                <td></td>
+                <td></td>
+            </tr>
+                                </tbody>
+    </table>
+
+    
+
+
+
+
+
+
+
+
+
+    <!-- TABELLA RIEPILOGO SIMULATORE -->
+            <!-- END TABELLA RIEPILOGO SIMULATORE -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div style="margin: 20px 0; font-size: 12px; text-align: center;background:white !important;color:black">
+              Si attesta che l'attività di volo sopra riportata, riferita al periodo dal 26/10/2025 al 25/11/2025, corrisponde esattamente
+        ai voli effettuati        dal pilota                        della Polizia di Stato BONO Antonio e risultanti dai registri di volo.
+          </div>
+
+
+        
+    Control check 0
+
+    
+
+</body></html>

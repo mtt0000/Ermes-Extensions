@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="it"><head>
+    <meta charset="UTF-8">
+    <title>Ermes Stralcio Completo</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; width: 320px; padding: 16px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #222; margin: 0; }
+        .container { background: white; border-radius: 12px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        h3 { margin: 0 0 12px 0; font-size: 18px; color: #2d6cdf; text-align: center; padding-bottom: 8px; border-bottom: 2px solid #e4e7eb; }
+        .section-title { font-size: 13px; font-weight: 600; margin-top: 14px; margin-bottom: 6px; color: #444; text-transform: uppercase; letter-spacing: 0.5px; }
+        input, select, button { width: 100%; box-sizing: border-box; }
+        input[type="date"], select { padding: 8px; border-radius: 6px; border: 1px solid #d0d5dd; margin-bottom: 8px; background: white; font-size: 13px; transition: border-color 0.2s; }
+        input[type="date"]:focus, select:focus { outline: none; border-color: #2d6cdf; }
+        button { margin-top: 6px; padding: 9px; border: none; background: #2d6cdf; color: white; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; transition: all 0.2s; }
+        button:hover { background: #1f56b5; transform: translateY(-1px); box-shadow: 0 2px 6px rgba(45, 108, 223, 0.3); }
+        button:active { transform: translateY(0); }
+        .small-btn { background: #f0f4ff; color: #2d6cdf; font-size: 11px; padding: 7px; font-weight: 500; }
+        .small-btn:hover { background: #e0e7ff; color: #1f56b5; }
+        .row { display: flex; gap: 6px; margin-top: 6px; }
+        .row button { flex: 1; }
+        #go { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); margin-top: 12px; padding: 11px; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
+        #go:hover { background: linear-gradient(135deg, #5568d3 0%, #6a3f8f 100%); }
+        .checkbox-row { margin-top: 12px; padding-top: 12px; border-top: 1px solid #e4e7eb; font-size: 12px; }
+        .checkbox-row label { display: flex; align-items: center; margin-bottom: 6px; cursor: pointer; }
+        .checkbox-row input[type="checkbox"] { width: auto; margin-right: 6px; cursor: pointer; }
+        .date-row { display: flex; gap: 8px; align-items: center; }
+        .date-row label { flex: 1; font-size: 12px; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h3>🚁 Ermes Stralcio</h3>
+        
+        <div class="section-title">📅 Periodo</div>
+        <div class="date-row">
+            <label>Dal: <input type="date" id="date_from" value="1950-01-01"></label>
+            <label>Al: <input type="date" id="date_to" value="2100-12-31"></label>
+        </div>
+        <div class="row">
+            <button class="small-btn" id="ultimi30">30 giorni</button>
+            <button class="small-btn" id="ultimi180">180 giorni</button>
+        </div>
+        <div class="row">
+            <button class="small-btn" id="ultimi365">365 giorni</button>
+            <button class="small-btn" id="tutto">Tutto</button>
+        </div>
+        <div class="row">
+            <button class="small-btn" id="mese">Mese corrente</button>
+            <button class="small-btn" id="anno">Anno corrente</button>
+        </div>
+
+        <div class="section-title">🚁 Aeromobile</div>
+        <select id="aeromobile">
+            <option value="7">AW139</option>
+            <option value="">Tutti</option>
+            <option value="1">A109</option>
+            <option value="2">AB206</option>
+            <option value="3">P68</option>
+            <option value="4">AB212</option>
+            <option value="5">P180</option>
+            <option value="6">AW109N</option>
+        </select>
+
+        <div class="section-title">👨&zwj;✈️ Pilota</div>
+        <select id="pilota">
+            <option value="TUTTI">🌍 TUTTI</option>
+            <option value="TUTTI_PIOP">👥 TUTTI PIOP</option>
+            <option value="TUTTI_PIAB">👥 TUTTI PIAB</option>
+            <option value="1028">1028 - Colasanti</option>
+            <option value="10">10 - Tarara</option>
+            <option value="22">22 - Sollevanti</option>
+            <option value="1072">1072 - Bono</option>
+            <option value="1086">1086 - Focaccia</option>
+            <option value="1157">1157 - Giardini</option>
+            <option value="1137">1137 - Procopio</option>
+            <option value="522">522 - Trozzi</option>
+            <option value="33">33 - Casini</option>
+            <option value="1099">1099 - Perticone</option>
+            <option value="1184">1184 - Marziali</option>
+        </select>
+
+        <button id="go">🚀 Apri Report</button>
+
+        <div class="checkbox-row">
+            <label><input type="checkbox" id="showSummary" checked=""> 📊 Mostra tabella riepilogativa</label>
+            <label><input type="checkbox" id="keepOpen"> 📌 Mantieni schede aperte</label>
+        </div>
+    </div>
+    <script src="popup.js"></script>
+
+
+</body></html>

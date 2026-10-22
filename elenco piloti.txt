@@ -1,0 +1,19 @@
+ <select id="pilota">      
+	<option value="TUTTI_PIAB">TUTTI PIAB</option> 
+      	<option value="TUTTI_PIOP">TUTTI PIOP</option>
+      	<option value="TUTTI">TUTTI</option>
+
+
+  	<option value="1028">1028 - Colasanti</option>
+  	<option value="10">10 - Tarara</option>
+  	<option value="22">22 - Sollevanti</option>
+  	<option value="30">30 - Pelliccia</option>
+ 	 <option value="1072">1072 - Bono</option>
+ 	 <option value="1086">1086 - Focaccia</option>
+ 	 <option value="1157">1157 - Giardini</option>
+ 	 <option value="1137">1137 - Procopio</option>
+ 	 <option value="522">522 - Trozzi</option>
+  	<option value="33">33 - Casini</option>
+ 	 <option value="1099">1099 - Perticone</option>
+	</select>
+
