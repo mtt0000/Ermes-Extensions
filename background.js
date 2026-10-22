@@ -21,7 +21,7 @@ chrome.runtime.onMessage.addListener((msg, sender) => {
     const idx = schedeInCorso.findIndex(s => s.tabId === sender.tab.id);
     let shouldShowSummary = false;
     const info = idx !== -1 ? schedeInCorso[idx].pilotaInfo : null;
-    allStats.push({ ...msg.data, specialita: info ? (info.specialita === "aereo" ? "Aereo" : "Elicottero") : "" });
+    allStats.push({ ...msg.data, specialita: info ? info.specialita : "" });
 
     if (idx !== -1) {
       const scheda = schedeInCorso[idx];
@@ -38,12 +38,11 @@ chrome.runtime.onMessage.addListener((msg, sender) => {
         .sort((a, b) => (isCasv(a) - isCasv(b)) || a.localeCompare(b, 'it'));
       const classeScopo = sc => isCasv(sc) ? 'scopo casv' : 'scopo';
       const minToOre = m => `${Math.floor(m / 60)}:${String(m % 60).padStart(2, "0")}`;
-      const FISSE = 8;
+      const FISSE = 7;
 
       const tableRows = allStats.map(r =>
         `<tr>
-          <td>${r.pilota}</td>
-          <td>${r.specialita || ''}</td>
+          <td data-sort="${r.pilota}">${r.specialita === 'aereo' ? '&#9992;&#65039; ' : r.specialita === 'elicottero' ? '&#128641; ' : ''}${r.pilota}</td>
           <td>${r.oreReali}</td>
           <td>${r.oreSimulatore}</td>
           <td>${r.oreTotali}</td>
@@ -76,6 +75,7 @@ th::after{content:' \u2195';opacity:0.4;font-size:11px}
 th.sorted-asc::after{content:' \u2191';opacity:1}
 th.sorted-desc::after{content:' \u2193';opacity:1}
 td{padding:12px;border-bottom:1px solid #e4e7eb}
+td:first-child{white-space:nowrap}
 tr:last-child td{border-bottom:none}
 tbody tr:nth-child(even) td{background:#eef2fa}
 tbody tr:nth-child(odd) td{background:#ffffff}
@@ -99,13 +99,12 @@ ${filtriUsati ? `<div class="filtri-box">
   <thead>
     <tr>
       <th data-col="0" data-type="text">Pilota</th>
-      <th data-col="1" data-type="text">Specialit&agrave;</th>
-      <th data-col="2" data-type="ore">Ore Reali</th>
-      <th data-col="3" data-type="ore">Ore Simulatore</th>
-      <th data-col="4" data-type="ore">Ore Totali</th>
-      <th data-col="5" data-type="ore">Ore Notturne</th>
-      <th data-col="6" data-type="date">Data ultimo volo</th>
-      <th data-col="7" data-type="date">Data ultimo volo notturno</th>
+      <th data-col="1" data-type="ore">Ore Reali</th>
+      <th data-col="2" data-type="ore">Ore Simulatore</th>
+      <th data-col="3" data-type="ore">Ore Totali</th>
+      <th data-col="4" data-type="ore">Ore Notturne</th>
+      <th data-col="5" data-type="date">Data ultimo volo</th>
+      <th data-col="6" data-type="date">Data ultimo volo notturno</th>
       ${scopi.map((sc, i) => `<th class="${classeScopo(sc)}" data-col="${FISSE + i}" data-type="ore">${sc}</th>`).join('')}
     </tr>
   </thead>
@@ -138,8 +137,9 @@ ${filtriUsati ? `<div class="filtri-box">
     state.dir = dir;
 
     rows.sort(function(a, b) {
-      var av = a.cells[col].textContent.trim();
-      var bv = b.cells[col].textContent.trim();
+      // data-sort: valore di ordinamento senza l'emoticon della specialita'
+      var av = (a.cells[col].dataset.sort || a.cells[col].textContent).trim();
+      var bv = (b.cells[col].dataset.sort || b.cells[col].textContent).trim();
       var an, bn;
       if (type === 'ore')  { an = parseOre(av);  bn = parseOre(bv);  return dir * (an - bn); }
       if (type === 'date') { an = parseDate(av); bn = parseDate(bv); return dir * (an - bn); }
