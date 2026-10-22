@@ -58,7 +58,7 @@ chrome.runtime.onMessage.addListener((msg, sender) => {
       const html = `<!DOCTYPE html><html lang="it"><head><meta charset="UTF-8"><title>Statistiche Piloti</title>
 <style>
 html,body{height:100%}
-body{font-family:Arial,sans-serif;max-width:1500px;margin:0 auto;padding:20px;box-sizing:border-box;background:#f6f7f9;display:flex;flex-direction:column}
+body{font-family:Arial,sans-serif;margin:0;padding:20px;box-sizing:border-box;background:#f6f7f9;display:flex;flex-direction:column}
 h2{color:#2d6cdf;text-align:center;margin-bottom:10px}
 .subtitle{text-align:center;color:#666;font-size:14px;margin-bottom:30px}
 table{width:100%;border-collapse:collapse;background:white}
