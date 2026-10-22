@@ -24,6 +24,27 @@
         .checkbox-row input[type="checkbox"] { width: auto; margin-right: 6px; cursor: pointer; }
         .date-row { display: flex; gap: 8px; align-items: center; }
         .date-row label { flex: 1; font-size: 12px; color: #666; }
+        .flags { display: flex; gap: 4px; margin-bottom: 8px; }
+        .flags label { flex: 1; text-align: center; padding: 6px 4px; border: 1px solid #d0d5dd; border-radius: 6px; font-size: 12px; cursor: pointer; background: #f8f9fc; user-select: none; }
+        .flags input { display: none; }
+        .flags label:has(input:checked) { background: #2d6cdf; color: white; border-color: #2d6cdf; font-weight: 600; }
+        details.ids { margin-top: 10px; font-size: 12px; }
+        details.ids summary { cursor: pointer; color: #555; }
+        .id-list { max-height: 180px; overflow-y: auto; margin-top: 6px; border: 1px solid #e4e7eb; border-radius: 6px; padding: 4px 6px; }
+        .id-row { display: flex; align-items: center; gap: 6px; padding: 2px 0; }
+        .id-row span { flex: 1; font-size: 11px; }
+        .id-row input { width: 70px; padding: 3px 5px; border: 1px solid #d0d5dd; border-radius: 4px; font-size: 11px; }
+        .id-row.missing span { color: #c62828; }
+        .hint { font-size: 11px; color: #888; margin-top: 4px; }
+        .module-box { margin-top: 12px; background: #fff7ec; border: 1px dashed #f57c00; border-radius: 10px; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+        .module-box .module-text { font-size: 12px; color: #444; }
+        .module-box .module-text b { display: block; color: #e65100; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .switch { position: relative; width: 38px; height: 20px; flex-shrink: 0; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; inset: 0; background: #bdbdbd; border-radius: 20px; cursor: pointer; transition: background 0.2s; }
+        .slider::before { content: ''; position: absolute; width: 16px; height: 16px; left: 2px; top: 2px; background: white; border-radius: 50%; transition: transform 0.2s; }
+        .switch input:checked + .slider { background: #f57c00; }
+        .switch input:checked + .slider::before { transform: translateX(18px); }
     </style>
 </head>
 <body>
@@ -61,22 +82,18 @@
         </select>
 
         <div class="section-title">👨&zwj;✈️ Pilota</div>
-        <select id="pilota">
-            <option value="TUTTI">🌍 TUTTI</option>
-            <option value="TUTTI_PIOP">👥 TUTTI PIOP</option>
-            <option value="TUTTI_PIAB">👥 TUTTI PIAB</option>
-            <option value="1028">1028 - Colasanti</option>
-            <option value="10">10 - Tarara</option>
-            <option value="22">22 - Sollevanti</option>
-            <option value="1072">1072 - Bono</option>
-            <option value="1086">1086 - Focaccia</option>
-            <option value="1157">1157 - Giardini</option>
-            <option value="1137">1137 - Procopio</option>
-            <option value="522">522 - Trozzi</option>
-            <option value="33">33 - Casini</option>
-            <option value="1099">1099 - Perticone</option>
-            <option value="1184">1184 - Marziali</option>
-        </select>
+        <div class="flags" id="flags">
+            <label><input type="radio" name="specialita" value="elicottero">🚁 Elicottero</label>
+            <label><input type="radio" name="specialita" value="aereo">✈️ Aereo</label>
+            <label><input type="radio" name="specialita" value="tutti" checked>🌍 Tutti</label>
+        </div>
+        <select id="pilota"></select>
+
+        <details class="ids">
+            <summary>⚙️ ID Ermes piloti</summary>
+            <div class="id-list" id="idList"></div>
+            <div class="hint">ID = parametro "pilota" nel link dello Stralcio Completo. I piloti senza ID vengono saltati.</div>
+        </details>
 
         <button id="go">🚀 Apri Report</button>
 
@@ -85,6 +102,18 @@
             <label><input type="checkbox" id="keepOpen"> 📌 Mantieni schede aperte</label>
         </div>
     </div>
+
+    <div class="module-box">
+        <div class="module-text">
+            <b>🧩 Modulo Parti Prime</b>
+            Azioni rapide e allegato scansioni
+        </div>
+        <label class="switch" title="Attiva/disattiva le funzioni Parti Prime">
+            <input type="checkbox" id="partiPrimeEnabled">
+            <span class="slider"></span>
+        </label>
+    </div>
+    <script src="pilots.js"></script>
     <script src="popup.js"></script>
 
 
