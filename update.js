@@ -55,14 +55,41 @@ async function leggiZip(buffer) {
   return file;
 }
 
+const attendi = ms => new Promise(r => setTimeout(r, ms));
+
+async function stessoContenuto(dir, nome, dati) {
+  try {
+    const attuale = new Uint8Array(await (await (await dir.getFileHandle(nome)).getFile()).arrayBuffer());
+    return attuale.length === dati.length && attuale.every((b, i) => b === dati[i]);
+  } catch (e) {
+    return false;
+  }
+}
+
+// Su Windows un file appena scritto puo' restare occupato per un attimo (antivirus, OneDrive, cartelle di rete):
+// si riprova qualche volta e, dal secondo tentativo, si elimina il file prima di ricrearlo.
+// Restituisce false se il file era gia' uguale e non e' stato toccato.
 async function scriviFile(radice, percorso, dati) {
   const parti = percorso.split("/");
   if (parti.some(x => !x || x === "." || x === "..")) throw new Error(`percorso non valido: ${percorso}`);
   let dir = radice;
   for (const parte of parti.slice(0, -1)) dir = await dir.getDirectoryHandle(parte, { create: true });
-  const scrittura = await (await dir.getFileHandle(parti[parti.length - 1], { create: true })).createWritable();
-  await scrittura.write(dati);
-  await scrittura.close();
+  const nome = parti[parti.length - 1];
+  if (await stessoContenuto(dir, nome, dati)) return false;
+
+  const ATTESE = [0, 500, 1500, 3000];
+  for (let tentativo = 0; ; tentativo++) {
+    await attendi(ATTESE[tentativo]);
+    try {
+      if (tentativo > 0) await dir.removeEntry(nome).catch(() => {});
+      const scrittura = await (await dir.getFileHandle(nome, { create: true })).createWritable();
+      await scrittura.write(dati);
+      await scrittura.close();
+      return true;
+    } catch (e) {
+      if (tentativo === ATTESE.length - 1) throw new Error(`impossibile scrivere ${percorso} (${e.name}: ${e.message})`);
+    }
+  }
 }
 
 // La cartella giusta contiene il manifest di questa estensione, alla versione in uso (o piu' recente)
@@ -75,7 +102,12 @@ async function cartellaValida(dir) {
   }
 }
 
+let aggiornamentoInCorso = false;
+
 async function aggiorna(dir) {
+  // un solo aggiornamento alla volta: due scritture sugli stessi file si ostacolano
+  if (aggiornamentoInCorso) return;
+  aggiornamentoInCorso = true;
   bloccaPulsanti(true);
   try {
     stato("⏳ Download della nuova versione da GitHub…");
@@ -90,19 +122,21 @@ async function aggiorna(dir) {
       return;
     }
 
-    stato(`⏳ Scrittura di ${file.size} file…`);
     // manifest.json per ultimo: se qualcosa va storto la cartella resta riconoscibile e si puo' riprovare
-    for (const [percorso, dati] of file) {
-      if (percorso !== "manifest.json") await scriviFile(dir, percorso, dati);
+    const percorsi = [...file.keys()].filter(p => p !== "manifest.json").concat("manifest.json");
+    let scritti = 0;
+    for (const [i, percorso] of percorsi.entries()) {
+      stato(`⏳ Scrittura dei file (${i + 1}/${percorsi.length}): ${percorso}`);
+      if (await scriviFile(dir, percorso, file.get(percorso))) scritti++;
     }
-    await scriviFile(dir, "manifest.json", manifest);
 
     await chrome.storage.local.set({ aggiornamentoAtteso: nuova });
-    stato(`✅ Versione ${nuova} installata: riavvio dell'estensione…`, "ok");
+    stato(`✅ Versione ${nuova} installata (${scritti} file aggiornati): riavvio dell'estensione…`, "ok");
     setTimeout(() => chrome.runtime.reload(), 1200);
   } catch (e) {
-    stato(`⚠️ Aggiornamento non riuscito: ${e.message}`, "errore");
+    stato(`⚠️ Aggiornamento non riuscito: ${e.message}. Chiudi i file dell'estensione eventualmente aperti e riprova.`, "errore");
   } finally {
+    aggiornamentoInCorso = false;
     bloccaPulsanti(false);
   }
 }
