@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Ermes Stralcio Completo",
-  "version": "3.1",
+  "version": "1",
   "description": "Estrazione report piloti con riepilogo statistiche per scopo del volo + modulo Parti Prime (azioni rapide e allegato scansioni)",
   "action": {
     "default_popup": "popup.html",
