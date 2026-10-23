@@ -49,11 +49,38 @@
         .slider::before { content: ''; position: absolute; width: 18px; height: 18px; left: 2px; top: 2px; background: white; border-radius: 50%; transition: transform 0.2s; }
         .switch input:checked + .slider { background: #f57c00; }
         .switch input:checked + .slider::before { transform: translateX(20px); }
+        [hidden] { display: none !important; }
+        .avviso-aggiornamento { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: -4px 0 12px 0; padding: 10px 12px; background: #fff7ec; border: 1px solid #f57c00; border-radius: 10px; color: #8a4b00; font-weight: 600; }
+        .avviso-aggiornamento button { width: auto; flex-shrink: 0; padding: 7px 12px; background: #f57c00; }
+        .avviso-aggiornamento button:hover { background: #e65100; }
+        .stato-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: -6px 0 14px 0; font-size: 12px; }
+        .stato { font-weight: 600; color: #666; }
+        .stato.connesso { color: #2e7d32; }
+        .stato.non-connesso, .stato.irraggiungibile { color: #c62828; }
+        .stato a { color: #2d6cdf; margin-left: 6px; }
+        .versione { color: #999; }
+        .messaggio { margin-top: 12px; padding: 10px 12px; border-radius: 8px; background: #f0f9ff; color: #0369a1; font-weight: 600; }
+        .messaggio.errore { background: #fef2f2; color: #b91c1c; }
+        .messaggio.ok { background: #f0fdf4; color: #15803d; }
+        .cred-form { display: grid; grid-template-columns: 1fr 1fr auto auto; gap: 8px; margin-top: 10px; }
+        .cred-form input { padding: 8px 10px; border: 1px solid #d0d5dd; border-radius: 7px; font-size: 13px; }
+        .cred-form button { width: auto; padding: 8px 10px; }
+        .check { display: flex; align-items: center; gap: 8px; margin-top: 10px; cursor: pointer; }
+        .check input { width: auto; margin: 0; }
     </style>
 </head>
 <body>
     <div class="container">
         <h3>🚁 Ermes Stralcio</h3>
+
+        <div class="avviso-aggiornamento" id="avvisoAggiornamento" hidden>
+            <span id="testoAggiornamento"></span>
+            <button id="apriAggiornamento">⬇️ Aggiorna ora</button>
+        </div>
+        <div class="stato-bar">
+            <span class="stato" id="statoLogin">⏳ Verifica dell'accesso a Ermes…</span>
+            <span class="versione" id="versione"></span>
+        </div>
 
         <div class="grid">
             <div class="card">
@@ -101,11 +128,24 @@
         </div>
 
         <button id="go">🚀 Apri Report</button>
+        <div class="messaggio" id="messaggio" hidden></div>
 
         <details class="ids">
             <summary>⚙️ ID Ermes piloti</summary>
             <div class="id-list" id="idList"></div>
             <div class="hint">ID = parametro "pilota" nel link dello Stralcio Completo. I piloti senza ID vengono saltati.</div>
+        </details>
+
+        <details class="ids">
+            <summary>🔐 Accesso automatico a Ermes</summary>
+            <div class="cred-form">
+                <input type="text" id="credUsername" placeholder="Username Ermes" autocomplete="off">
+                <input type="password" id="credPassword" placeholder="Password" autocomplete="new-password">
+                <button class="small-btn" id="salvaCredenziali">💾 Salva</button>
+                <button class="small-btn" id="eliminaCredenziali">🗑️ Elimina</button>
+            </div>
+            <label class="check"><input type="checkbox" id="loginAutomatico"> Accedi da solo quando Ermes chiede il login</label>
+            <div class="hint" id="statoCredenziali"></div>
         </details>
     </div>
 
@@ -119,6 +159,10 @@
             <span class="slider"></span>
         </label>
     </div>
+    <script src="archivio.js"></script>
+    <script src="credenziali.js"></script>
+    <script src="ermes.js"></script>
+    <script src="aggiornamenti.js"></script>
     <script src="pilots.js"></script>
     <script src="popup.js"></script>
 </body></html>

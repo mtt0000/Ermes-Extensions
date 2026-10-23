@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="it"><head>
+    <meta charset="UTF-8">
+    <title>Aggiornamento Ermes Stralcio</title>
+    <link rel="icon" href="ico.png">
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #222; font-size: 14px; }
+        .container { background: white; border-radius: 14px; padding: 26px 30px; box-shadow: 0 6px 18px rgba(0,0,0,0.18); max-width: 560px; width: 100%; }
+        h2 { margin: 0 0 6px 0; color: #2d6cdf; }
+        .versioni { color: #555; margin-bottom: 18px; }
+        .versioni b { color: #222; }
+        ol { padding-left: 20px; line-height: 1.6; color: #444; margin: 0 0 18px 0; }
+        code { background: #f1f3f8; padding: 1px 5px; border-radius: 4px; }
+        .pulsanti { display: flex; gap: 10px; }
+        button { flex: 1; padding: 12px; border: none; border-radius: 8px; background: #2d6cdf; color: white; font: inherit; font-weight: 600; cursor: pointer; }
+        button:hover { background: #1f56b5; }
+        button.secondario { background: white; color: #2d6cdf; border: 1px solid #d6defa; }
+        button.secondario:hover { background: #e0e7ff; }
+        button:disabled { opacity: 0.6; cursor: progress; }
+        #stato { margin-top: 16px; padding: 10px 12px; border-radius: 8px; background: #f0f9ff; color: #0369a1; }
+        #stato.errore { background: #fef2f2; color: #b91c1c; }
+        #stato.ok { background: #f0fdf4; color: #15803d; }
+        [hidden] { display: none !important; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🔄 Aggiornamento estensione</h2>
+        <div class="versioni">Installata: <b id="vAttuale">…</b> · Disponibile: <b id="vDisponibile">…</b></div>
+        <ol>
+            <li>La prima volta Chrome chiede la cartella dell'estensione: scegli <code>ufficio ops\Ermes-Extensions-main</code> (quella con <code>manifest.json</code>) e consenti la modifica dei file.</li>
+            <li>I file nuovi vengono scaricati da GitHub e scritti nella cartella, poi l'estensione si riavvia da sola.</li>
+            <li>Le impostazioni salvate (ID piloti, credenziali, preferenze) restano.</li>
+        </ol>
+        <div class="pulsanti">
+            <button id="aggiorna" hidden>⬇️ Aggiorna ora</button>
+            <button id="scegliCartella" class="secondario">📂 Scegli cartella e aggiorna</button>
+        </div>
+        <div id="stato">Controllo della versione disponibile…</div>
+    </div>
+    <script src="archivio.js"></script>
+    <script src="aggiornamenti.js"></script>
+    <script src="update.js"></script>
+</body></html>

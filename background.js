@@ -1,23 +1,118 @@
+importScripts("archivio.js", "credenziali.js", "ermes.js", "aggiornamenti.js");
+
 let schedeInCorso = [];
 let allStats = [];
 let filtriUsati = null;
 
-chrome.runtime.onMessage.addListener((msg, sender) => {
-  if (msg.type === "openPilot") {
-    if (!filtriUsati && msg.filtri) {
-      filtriUsati = msg.filtri;
-    }
-    chrome.tabs.create({ url: msg.url }, tab => {
-      schedeInCorso.push({
-        tabId: tab.id,
-        pilota: msg.pilotaId,
-        pilotaInfo: msg.pilotaInfo || null,
-        keepOpen: msg.keepOpen,
-        showSummary: msg.showSummary
-      });
+function apriPilota(item, filtri) {
+  if (!filtriUsati && filtri) {
+    filtriUsati = filtri;
+  }
+  chrome.tabs.create({ url: item.url }, tab => {
+    schedeInCorso.push({
+      tabId: tab.id,
+      pilota: item.pilotaId,
+      pilotaInfo: item.pilotaInfo || null,
+      keepOpen: item.keepOpen,
+      showSummary: item.showSummary
     });
+  });
+}
 
-  } else if (msg.type === "statsComplete") {
+// ===== ACCESSO A ERMES =====
+// Prova l'accesso con le credenziali salvate (se attivo e se l'ultimo tentativo non e' fallito)
+async function accessoConCredenziali() {
+  const { loginAutomatico = true, loginFallito = false } = await chrome.storage.local.get(["loginAutomatico", "loginFallito"]);
+  if (!loginAutomatico || loginFallito) return "non-connesso";
+  const cred = await Credenziali.leggi();
+  if (!cred) return "non-connesso";
+  const esito = await Ermes.accedi(cred);
+  // con credenziali errate non si riprova in automatico, per non bloccare l'utenza
+  if (esito === "errato") await chrome.storage.local.set({ loginFallito: true });
+  return esito === "connesso" ? "connesso" : "non-connesso";
+}
+
+// Prima di aprire le schede verifica la sessione; senza accesso apre Ermes e i report partono dopo il login
+async function avviaReport(items, filtri) {
+  let stato = await Ermes.statoLogin();
+  if (stato === "irraggiungibile") {
+    return { ok: false, errore: "Ermes non è raggiungibile: controlla la connessione alla rete." };
+  }
+  if (stato === "non-connesso") stato = await accessoConCredenziali();
+  if (stato === "connesso") {
+    items.forEach(item => apriPilota(item, filtri));
+    return { ok: true };
+  }
+  const tab = await chrome.tabs.create({ url: `${ERMES_URL}/admin` });
+  await chrome.storage.session.set({ reportInAttesa: { items, filtri, tabId: tab.id } });
+  return { ok: true, inAttesaLogin: true };
+}
+
+let reportInPartenza = false;
+chrome.tabs.onUpdated.addListener(async (tabId, info, tab) => {
+  if (info.status !== "complete" || reportInPartenza || !tab.url) return;
+  const url = new URL(tab.url);
+  if (url.hostname !== new URL(ERMES_URL).hostname || url.pathname.startsWith("/login")) return;
+  const { reportInAttesa } = await chrome.storage.session.get("reportInAttesa");
+  if (!reportInAttesa || reportInAttesa.tabId !== tabId) return;
+  reportInPartenza = true;
+  try {
+    if (await Ermes.statoLogin() !== "connesso") return;
+    await chrome.storage.session.remove("reportInAttesa");
+    reportInAttesa.items.forEach(item => apriPilota(item, reportInAttesa.filtri));
+  } finally {
+    reportInPartenza = false;
+  }
+});
+
+chrome.tabs.onRemoved.addListener(async tabId => {
+  const { reportInAttesa } = await chrome.storage.session.get("reportInAttesa");
+  if (reportInAttesa && reportInAttesa.tabId === tabId) chrome.storage.session.remove("reportInAttesa");
+});
+
+// Le credenziali decifrate vanno solo allo script della pagina di login di Ermes
+async function credenzialiPerPagina(sender) {
+  if (sender.id !== chrome.runtime.id || !sender.url) return null;
+  if (new URL(sender.url).hostname !== new URL(ERMES_URL).hostname) return null;
+  const { loginAutomatico = true, loginFallito = false } = await chrome.storage.local.get(["loginAutomatico", "loginFallito"]);
+  if (!loginAutomatico || loginFallito) return null;
+  return Credenziali.leggi();
+}
+
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+  if (msg.type === "apriReport") {
+    avviaReport(msg.items, msg.filtri).then(sendResponse);
+    return true;
+  }
+  if (msg.type === "credenzialiLogin") {
+    credenzialiPerPagina(sender).then(sendResponse);
+    return true;
+  }
+  if (msg.type === "loginAutomaticoFallito") {
+    chrome.storage.local.set({ loginFallito: true });
+  }
+});
+
+// ===== AGGIORNAMENTI =====
+async function controllaAggiornamenti() {
+  try {
+    await Aggiornamenti.controlla();
+  } catch (e) {
+    // GitHub non raggiungibile: si riprova al prossimo controllo
+  }
+}
+
+chrome.runtime.onStartup.addListener(controllaAggiornamenti);
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.alarms.create("aggiornamenti", { periodInMinutes: 360 });
+  controllaAggiornamenti();
+});
+chrome.alarms.onAlarm.addListener(alarm => {
+  if (alarm.name === "aggiornamenti") controllaAggiornamenti();
+});
+
+chrome.runtime.onMessage.addListener((msg, sender) => {
+  if (msg.type === "statsComplete") {
     const idx = schedeInCorso.findIndex(s => s.tabId === sender.tab.id);
     let shouldShowSummary = false;
     const info = idx !== -1 ? schedeInCorso[idx].pilotaInfo : null;

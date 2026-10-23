@@ -1,24 +1,34 @@
 {
   "manifest_version": 3,
   "name": "Ermes Stralcio Completo",
-  "version": "3.0",
+  "version": "3.1",
   "description": "Estrazione report piloti con riepilogo statistiche per scopo del volo + modulo Parti Prime (azioni rapide e allegato scansioni)",
   "action": {
     "default_popup": "popup.html",
     "default_icon": "ico.png"
   },
-  "permissions": ["tabs", "storage"],
+  "permissions": [
+    "tabs",
+    "storage",
+    "alarms"
+  ],
   "host_permissions": [
     "http://ermes.cen.poliziadistato.it/*",
-    "https://ermes.cen.poliziadistato.it/*"
+    "https://ermes.cen.poliziadistato.it/*",
+    "https://raw.githubusercontent.com/*",
+    "https://codeload.github.com/*"
   ],
   "background": {
     "service_worker": "background.js"
   },
   "content_scripts": [
     {
-      "matches": ["http://ermes.cen.poliziadistato.it/*"],
-      "js": ["stralcio.js"]
+      "matches": [
+        "http://ermes.cen.poliziadistato.it/*"
+      ],
+      "js": [
+        "stralcio.js"
+      ]
     },
     {
       "matches": [
@@ -27,7 +37,19 @@
         "http://ermes.cen.poliziadistato.it/admin/index/add-allegati*",
         "https://ermes.cen.poliziadistato.it/admin/index/add-allegati*"
       ],
-      "js": ["parteprima.js"],
+      "js": [
+        "parteprima.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "http://ermes.cen.poliziadistato.it/*",
+        "https://ermes.cen.poliziadistato.it/*"
+      ],
+      "js": [
+        "login.js"
+      ],
       "run_at": "document_idle"
     }
   ]

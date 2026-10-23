@@ -91,8 +91,16 @@ const d = new Date(iso);
 return `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}`;
 }
 
+// ===== MESSAGGI =====
+function mostraMessaggio(testo, tipo) {
+const el = document.getElementById("messaggio");
+el.textContent = testo;
+el.className = "messaggio" + (tipo ? " " + tipo : "");
+el.hidden = !testo;
+}
+
 // ===== APERTURA LINK =====
-function apriLink(pilota) {
+function creaRichiesta(pilota) {
 const id = idPilota(pilota);
 const da = formatDMY(document.getElementById("date_from").value);
 const a = formatDMY(document.getElementById("date_to").value);
@@ -104,28 +112,39 @@ const url = BASE_URL
 .replace("AEROMOBILE_PLACEHOLDER", aeromobilePart)
 .replace("PILOTA", id);
 
-const showSummary = document.getElementById("showSummary").checked;
-const keepOpen = document.getElementById("keepOpen").checked;
-
-// Testo leggibile dei filtri, da mostrare nel riepilogo finale
-const aeromobileLabel = document.getElementById("aeromobile").selectedOptions[0].textContent;
-const pilotaLabel = document.getElementById("pilota").selectedOptions[0].textContent;
-const filtri = {
-dal: da,
-al: a,
-aeromobile: aeromobileLabel,
-pilotaSelezione: pilotaLabel,
-specialita: etichettaSpecialita(specialitaSelezionata())
-};
-
-chrome.runtime.sendMessage({
-type: "openPilot",
+return {
 url,
 pilotaId: id,
 pilotaInfo: { nome: pilota.nome, qualifica: pilota.qualifica, matricola: pilota.matricola, specialita: pilota.specialita },
-showSummary,
-keepOpen,
-filtri
+showSummary: document.getElementById("showSummary").checked,
+keepOpen: document.getElementById("keepOpen").checked
+};
+}
+
+// Testo leggibile dei filtri, da mostrare nel riepilogo finale
+function filtriCorrenti() {
+return {
+dal: formatDMY(document.getElementById("date_from").value),
+al: formatDMY(document.getElementById("date_to").value),
+aeromobile: document.getElementById("aeromobile").selectedOptions[0].textContent,
+pilotaSelezione: document.getElementById("pilota").selectedOptions[0].textContent,
+specialita: etichettaSpecialita(specialitaSelezionata())
+};
+}
+
+// Il background verifica l'accesso a Ermes prima di aprire le schede
+function apriReport(lista) {
+mostraMessaggio("⏳ Verifica dell'accesso a Ermes…");
+chrome.runtime.sendMessage({ type: "apriReport", items: lista.map(creaRichiesta), filtri: filtriCorrenti() }, risposta => {
+if (chrome.runtime.lastError || !risposta) {
+mostraMessaggio("⚠️ Errore interno dell'estensione: riprova.", "errore");
+} else if (!risposta.ok) {
+mostraMessaggio(`⚠️ ${risposta.errore}`, "errore");
+} else if (risposta.inAttesaLogin) {
+mostraMessaggio("🔐 Accedi a Ermes nella scheda aperta: i report partiranno subito dopo.");
+} else {
+mostraMessaggio("");
+}
 });
 }
 
@@ -138,7 +157,7 @@ alert("Nessun pilota con ID Ermes impostato per questa selezione.");
 return;
 }
 if (senzaId > 0 && !confirm(`${senzaId} piloti senza ID Ermes verranno saltati. Continuare con ${conId.length}?`)) return;
-conId.forEach(p => apriLink(p));
+apriReport(conId);
 }
 
 document.getElementById("go").addEventListener("click", () => {
@@ -151,7 +170,7 @@ apriGruppo(pilotiFiltrati().filter(p => p.tipo === "piop"));
 apriGruppo(pilotiFiltrati().filter(p => p.tipo === "piab"));
 } else {
 const p = PILOTI.find(x => x.matricola === sel);
-if (p && idPilota(p)) apriLink(p);
+if (p && idPilota(p)) apriReport([p]);
 }
 });
 
@@ -233,3 +252,103 @@ chrome.storage.sync.set({ showSummary: e.target.checked });
 document.getElementById("keepOpen").addEventListener("change", (e) => {
 chrome.storage.sync.set({ keepOpen: e.target.checked });
 });
+
+// ===== STATO DELL'ACCESSO =====
+async function mostraStatoLogin() {
+const el = document.getElementById("statoLogin");
+const stato = await Ermes.statoLogin();
+const testi = {
+connesso: "🟢 Connesso a Ermes",
+"non-connesso": "🔴 Accesso a Ermes non effettuato",
+irraggiungibile: "⚠️ Ermes non raggiungibile"
+};
+el.textContent = testi[stato];
+el.className = "stato " + stato;
+if (stato === "non-connesso") {
+const link = document.createElement("a");
+link.href = "#";
+link.textContent = "Accedi";
+link.addEventListener("click", e => {
+e.preventDefault();
+chrome.tabs.create({ url: `${ERMES_URL}/admin` });
+});
+el.appendChild(link);
+}
+}
+
+// ===== AGGIORNAMENTI =====
+async function mostraAggiornamenti() {
+const attuale = Aggiornamenti.versioneAttuale();
+document.getElementById("versione").textContent = `v${attuale}`;
+
+// esito dell'ultimo aggiornamento automatico
+const { aggiornamentoAtteso } = await chrome.storage.local.get("aggiornamentoAtteso");
+if (aggiornamentoAtteso) {
+await chrome.storage.local.remove("aggiornamentoAtteso");
+if (Aggiornamenti.confronta(attuale, aggiornamentoAtteso) >= 0) {
+mostraMessaggio(`✅ Estensione aggiornata alla versione ${attuale}`, "ok");
+} else {
+// i file sono stati scritti in una cartella diversa da quella caricata da Chrome
+await Archivio.elimina("cartellaEstensione");
+mostraMessaggio("⚠️ L'aggiornamento non è stato applicato: la cartella scelta non è quella da cui Chrome carica l'estensione. Riprova scegliendo la cartella giusta.", "errore");
+}
+}
+
+try {
+const info = await Aggiornamenti.controlla();
+if (info.nuova) {
+document.getElementById("testoAggiornamento").textContent = `🆕 Disponibile la versione ${info.disponibile} (installata ${info.attuale})`;
+document.getElementById("avvisoAggiornamento").hidden = false;
+}
+} catch (e) {
+// GitHub non raggiungibile: nessun avviso
+}
+}
+
+document.getElementById("apriAggiornamento").addEventListener("click", () => {
+chrome.tabs.create({ url: chrome.runtime.getURL("update.html") });
+});
+
+// ===== CREDENZIALI =====
+async function caricaCredenziali() {
+const cred = await Credenziali.leggi();
+const { loginAutomatico = true, loginFallito = false } = await chrome.storage.local.get(["loginAutomatico", "loginFallito"]);
+document.getElementById("credUsername").value = cred ? cred.username : "";
+document.getElementById("credPassword").value = "";
+document.getElementById("credPassword").placeholder = cred ? "•••••••• (salvata)" : "Password";
+document.getElementById("loginAutomatico").checked = loginAutomatico;
+document.getElementById("statoCredenziali").textContent = !cred
+? "Nessuna credenziale salvata. Username e password vengono cifrati (AES-256) e restano solo su questo computer."
+: loginFallito
+? "⚠️ L'ultimo accesso automatico non è riuscito: controlla username e password e salvali di nuovo."
+: "🔒 Credenziali salvate e cifrate (AES-256) solo su questo computer.";
+}
+
+document.getElementById("salvaCredenziali").addEventListener("click", async () => {
+const username = document.getElementById("credUsername").value.trim();
+let password = document.getElementById("credPassword").value;
+if (!password) {
+// password lasciata vuota: si tiene quella gia' salvata
+const salvate = await Credenziali.leggi();
+password = salvate ? salvate.password : "";
+}
+if (!username || !password) {
+document.getElementById("statoCredenziali").textContent = "⚠️ Inserisci username e password.";
+return;
+}
+await Credenziali.salva(username, password);
+await caricaCredenziali();
+});
+
+document.getElementById("eliminaCredenziali").addEventListener("click", async () => {
+await Credenziali.elimina();
+await caricaCredenziali();
+});
+
+document.getElementById("loginAutomatico").addEventListener("change", e => {
+chrome.storage.local.set({ loginAutomatico: e.target.checked });
+});
+
+mostraAggiornamenti();
+mostraStatoLogin();
+caricaCredenziali();
